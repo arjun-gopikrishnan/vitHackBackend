@@ -19,8 +19,10 @@ const upload = multer({
     }
 })
 
-router.get('/test', (req, res) => {
-    res.send('Server is online');
+router.get('/', (req, res) => {
+    res.send({
+        "documentation": "https://documenter.getpostman.com/view/13305175/TzK15ZxT"
+    });
 });
 
 router.post('/users/me/upload', auth, upload.single('profile_photo'), async(req, res) => {
