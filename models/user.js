@@ -32,7 +32,10 @@ const userScheme = new mongoose.Schema({
                 type: String,
                 required: true
             }
-        }]
+        }],
+        profile_photo: {
+            type: Buffer,
+        }
     })
     //Methods
 

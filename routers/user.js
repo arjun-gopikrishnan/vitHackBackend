@@ -3,9 +3,40 @@ const User = require('../models/user');
 const router = new express.Router();
 const jwt = require('jsonwebtoken');
 const auth = require('../middleware/auth');
+const multer = require('multer');
+const sharp = require('sharp');
+
+const upload = multer({
+    limits: {
+        fileSize: 8000000
+    },
+    fileFilter(req, file, cb) {
+        if (!file.originalname.match(/\.(jpg|jpeg|png)$/)) {
+            cb(new Error('File must have a jpg,jpeg or png'));
+        }
+
+        cb(undefined, true);
+    }
+})
 
 router.get('/test', (req, res) => {
-    res.send('From a new file');
+    res.send('Server is online');
+});
+
+router.post('/users/me/upload', auth, upload.single('profile_photo'), async(req, res) => {
+    const buffer = await sharp(req.file.buffer).resize({ width: 160, height: 160 }).png().toBuffer();
+
+    req.user.profile_photo = buffer;
+    await req.user.save();
+    res.send()
+}, (error, req, res, next) => {
+    res.status(400).send({ error: error.message })
+})
+
+router.post('/users/me/deletePhoto', auth, async(req, res) => {
+    req.user.profile_photo = undefined;
+    req.user.save();
+    res.send("deleted image")
 });
 
 router.post('/users', async(req, res) => {
@@ -82,7 +113,7 @@ router.get('/users', async(req, res) => {
 
 });
 
-router.get('/users/me', auth, async(req, res) => {
+router.get('/users/myprofile', auth, async(req, res) => {
     res.send(req.user);
 
 });
