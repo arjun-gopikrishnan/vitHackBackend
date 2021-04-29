@@ -1,5 +1,6 @@
 const express = require('express');
 const User = require('../models/user');
+const Repos = require('../models/repo')
 const router = new express.Router();
 const jwt = require('jsonwebtoken');
 const auth = require('../middleware/auth');
@@ -11,7 +12,7 @@ const upload = multer({
         fileSize: 8000000
     },
     fileFilter(req, file, cb) {
-        if (!file.originalname.match(/\.(jpg|jpeg|png)$/)) {
+        if (!file.originalname.match(/\.(jpg|jpeg|png|JPG|JPEG|PNG)$/)) {
             cb(new Error('File must have a jpg,jpeg or png'));
         }
 
@@ -117,6 +118,13 @@ router.get('/users', async(req, res) => {
 
 router.get('/users/myprofile', auth, async(req, res) => {
     res.send(req.user);
+
+});
+
+router.get('/user/myRepos', auth, async(req, res) => {
+
+    await req.user.populate('repos').execPopulate();
+    res.send(req.user.repos);
 
 });
 

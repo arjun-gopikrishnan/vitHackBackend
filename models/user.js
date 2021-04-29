@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const validator = require('validator');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-
+const Repo = require('./repo')
 const userScheme = new mongoose.Schema({
         username: {
             type: String,
@@ -53,6 +53,12 @@ userScheme.statics.findByCredentials = async(email, password) => {
 
     return user;
 }
+
+userScheme.virtual('repos', {
+    ref: 'Repo',
+    localField: '_id',
+    foreignField: 'author'
+});
 
 userScheme.methods.generateAuthToken = async function() {
     const user = this;
