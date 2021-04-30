@@ -121,6 +121,16 @@ router.get('/users/myprofile', auth, async(req, res) => {
 
 });
 
+router.get('/users/myImage', auth, async(req, res) => {
+    if (req.user.profile_photo) {
+        res.set('Content-type', 'image/png')
+        return res.send(req.user.profile_photo);
+    } else
+        return res.status(400).send({ "message": "User has not uploaded image" })
+
+});
+
+
 router.get('/user/myRepos', auth, async(req, res) => {
 
     await req.user.populate('repos').execPopulate();
