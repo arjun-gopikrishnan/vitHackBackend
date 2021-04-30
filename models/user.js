@@ -19,6 +19,10 @@ const userScheme = new mongoose.Schema({
                 }
             }
         },
+        collegeName: {
+            type: String,
+            required: true,
+        },
         desc: {
             type: String,
             required: true,
