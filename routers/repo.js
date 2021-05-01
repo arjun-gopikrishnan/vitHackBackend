@@ -18,6 +18,32 @@ router.get('/repos/:id', async(req, res) => {
 
 });
 
+router.get('/getrepoByname/:name', async(req, res) => {
+    const name = req.params.name;
+
+    try {
+        const repo = await Repo.findOne({ courseName: name });
+        res.send(repo);
+
+    } catch (e) {
+        res.status(500).send(e);
+    }
+
+});
+
+router.get('/getrepoBytags/:tag', async(req, res) => {
+    const tag = req.params.tag;
+
+    try {
+        const repo = await Repo.find({ tags: tag });
+        res.send(repo);
+
+    } catch (e) {
+        res.status(500).send(e);
+    }
+
+});
+
 router.patch('/repo/:id', auth, async(req, res) => {
     const updates = Object.keys(req.body);
     console.log(updates)
